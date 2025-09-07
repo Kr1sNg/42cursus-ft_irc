@@ -1,11 +1,14 @@
 # 42cursus-ft_irc
-42's project about creating own Internet Relay Chat (IRC) server
+42's project which requires to create an Internet Relay Chat (IRC) server
 
 
 ## A - Introduction
 
 ### I - Understand the IRC
 
+**IRC (Internet Relay Chat)** is a text-based chat system for *instant messaging*. IRC is designed for *group communication* in discussion forums, called channels, but also allows one-on-one communication via *private messages* as well as chat and data transfer, including *file sharing*.
+
+IRC follows **client-server model**. It means that both client and server software are required in order to use it. 
 
 ### II - Requirements
 
@@ -205,7 +208,6 @@ off_t	lseek(int fd, off_t offset, int whence);
 int	fstat(int fd, struct stat *buf);
 ```
 
-
 ## B - Pseudo Code
 
 ## C - Testing
@@ -216,3 +218,7 @@ int	fstat(int fd, struct stat *buf);
 #### References
 
 - [IRC]
+- [Client nc - NetCat](https://www.geeksforgeeks.org/linux-unix/practical-uses-of-ncnetcat-command-in-linux/)
+- [Client irssi](https://irssi.org/)
+- [Client weechat](https://weechat.org/)
+- [Internet Relay Chat: Server Protocol - RFC2813](https://datatracker.ietf.org/doc/html/rfc2813)

@@ -1,23 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   00-socket.cpp                                      :+:      :+:    :+:   */
+/*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tat-nguy <tat-nguy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/13 08:53:54 by tat-nguy          #+#    #+#             */
-/*   Updated: 2025/08/13 08:56:17 by tat-nguy         ###   ########.fr       */
+/*   Created: 2025/08/12 22:59:34 by tat-nguy          #+#    #+#             */
+/*   Updated: 2025/09/05 19:03:38 by tat-nguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <sys/socket.h>
-#include <stdio.h>
+#ifndef _SERVER_
+# define _SERVER_
 
-int	main(void)
+#include <iostream>
+#include <exception>
+#include <vector>
+
+class Server
 {
-	int	sockfd = socket(AF_INET, SOCK_STREAM, 0);
-	if (sockfd < 0)
-		perror("socket");
-	
-	
-}
+	private:
+		Server(void);
+		Server(Server const &src);
+		Server	&operator=(Server const &rhs);
+
+		std::string	port;
+		int			serverSocket;
+		std::string	password;
+		
+		std::vector<Client>	clients;
+		
+	public:
+		Server(int ac, char *av[]);
+		~Server();
+		
+};
+
+
+
+
+#endif
