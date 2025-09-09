@@ -6,7 +6,7 @@
 /*   By: tat-nguy <tat-nguy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 18:50:36 by tat-nguy          #+#    #+#             */
-/*   Updated: 2025/09/05 18:54:43 by tat-nguy         ###   ########.fr       */
+/*   Updated: 2025/09/09 18:12:48 by tat-nguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ int	main(int ac, char *av[])
 	try
 	{
 		Server	ircserv(ac, av);
+
+		ircserv.start();
 	}
 	catch (const std::exception &e)
 	{
@@ -27,5 +29,6 @@ int	main(int ac, char *av[])
 	{
 		std::cerr << "Error: Unexpected Error" << std::endl;
 	}
-	
+
+	return (0);
 }

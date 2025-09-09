@@ -6,7 +6,7 @@
 /*   By: tat-nguy <tat-nguy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 22:57:44 by tat-nguy          #+#    #+#             */
-/*   Updated: 2025/09/08 10:40:59 by tat-nguy         ###   ########.fr       */
+/*   Updated: 2025/09/09 15:14:11 by tat-nguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,11 +61,15 @@ void	Server::SerSocket(void)
 	if (bind(_SerSocketFd, (struct sockaddr *)&add, sizeof(add)) == -1)
 		throw std::runtime_error("failed to bind socket");
 	// listen for incomming connections and making the socket a passive socket
+	// - active socket (irc client) vs passive socket (irc server)
 	if (listen(_SerSocketFd, SOMAXCONN) == -1)
 		throw std::runtime_error("listen() failed");
 	
-	
-	
+	//-> fill the struct pollfd
+	NewPoll.fd = _SerSocketFd; //-> add the server socket to the pollfd
+	NewPoll.events = POLLIN; //-> set event to POLLIN for reading data
+	NewPoll.revents = 0; //-> set the revents to 0
+	_fds.push_back(NewPoll); //-> add the server socket to the pollfd
 }
 
 void	Server::ServerInit()
@@ -75,7 +79,81 @@ void	Server::ServerInit()
 	
 	std::cout << "Server <" << _SerSocketFd << "> connected" << std::endl;
 	std::cout << "Waiting to accept a connection...\n";
+
+	//-> run the server until the signal is received 
+	while (Server::_Signal == false)
+	{
+		//-> wait for events on multiple fds
+		if ((poll(&_fds[0], _fds.size(), -1) == -1) && Server::_Signal == false)
+			throw std::runtime_error("poll() failed");
+		
+		for (size_t i = 0; i < _fds.size(); ++i) //-> check all fds
+		{
+			if (_fds[i].revents & POLLIN) //-> check if there's data to read on fd
+			{
+				if (_fds[i].fd == _SerSocketFd) //-> check if fd is server socket or not
+					AcceptNewClient(); //-> accept new client
+				else
+					ReceiveNewData(_fds[i].fd); //-> receive new data from a registered client
+			}
+		}
+	}
+	CloseFds(); //-> close the fds when server stops
 }
+
+void	Server::AcceptNewClient()
+{
+	Client				cli;
+	struct sockaddr_in	cliadd;
+	struct pollfd		NewPoll;
+	socklen_t			len = sizeof(cliadd);
+	
+	int	incofd = accept(_SerSocketFd, (sockaddr *)&(cliadd), &len); //-> accept new client
+	if (incofd == -1)
+	{
+		std::cout << "accept() failed" << std::endl;
+		return ;
+	}
+	if (fcntl(incofd, F_SETFL, O_NONBLOCK) == -1) //->set the socket option (O_NONBLOCK) for non-blocking socket
+	{
+		std::cout << "fcntl() failed" << std::endl;
+		return ;
+	}
+	
+	// fill in the pollfd struct
+	NewPoll.fd = incofd;	//-> add client socket to pollfd
+	NewPoll.events = POLLIN; //-> set envent to POLLIN for reading data
+	NewPoll.revents = 0; //-> set revents to 0
+
+	// add new client and new fds to the server class
+	cli.SetFd(incofd); //-> set client fd
+	cli.SetIpAdd(inet_ntoa(cliadd.sin_addr)); //-> convet ip address to string and set it
+	_clients.push_back(cli); //-> add client to the vector of clients
+	_fds.push_back(NewPoll); //-> add client socket to the pollfd
+	
+	std::cout << "Client <" << incofd << "> Connected" << std::endl;
+}
+
+// receive new data from registered client
+void	Server::ReceiveNewData(int fd)
+{
+	char	buff[1024]; //-> buffer for received data
+	memset(buff, 0, sizeof(buff)); //-> clear the buffer
+
+	ssize_t	bytes = recv(fd, buff, sizeof(buff) - 1, 0); //-> receive the data 
+	if (bytes <= 0)
+	{
+		std::cout << "Client <" << fd << "> disconnected" << std::endl;
+		ClearClients(fd); //-> clear client
+		close(fd); //-> close client socket
+	}
+	else //-> print the received data
+	{
+		buff[bytes] = '\0';
+		std::cout << "Client <" << fd << "> data: " << buff;
+	}
+}
+
 
 int	main(void)
 {
