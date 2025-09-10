@@ -6,7 +6,9 @@
 /*   By: tat-nguy <tat-nguy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 22:59:19 by tat-nguy          #+#    #+#             */
-/*   Updated: 2025/08/12 22:59:20 by tat-nguy         ###   ########.fr       */
+/*   Updated: 2025/09/10 10:39:28 by tat-nguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "../includes/ircserv.h"
+#include "../includes/Client.hpp"

@@ -6,37 +6,45 @@
 /*   By: tat-nguy <tat-nguy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 22:59:34 by tat-nguy          #+#    #+#             */
-/*   Updated: 2025/09/05 19:03:38 by tat-nguy         ###   ########.fr       */
+/*   Updated: 2025/09/10 12:08:39 by tat-nguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef _SERVER_
 # define _SERVER_
 
-#include <iostream>
-#include <exception>
-#include <vector>
+#include "ircserv.h"
 
 class Server
 {
 	private:
+		int			_port;
+		std::string	_password;
+		int			_server_fd;
+		
+		std::vector<struct pollfd>	_poll_fds;
+		std::map<int, std::string>	_clients;
+
 		Server(void);
 		Server(Server const &src);
 		Server	&operator=(Server const &rhs);
 
-		std::string	port;
-		int			serverSocket;
-		std::string	password;
-		
-		std::vector<Client>	clients;
+		void	initServerSocket();
+		void	acceptClient();
+		void	handlerClientData(size_t index);
 		
 	public:
-		Server(int ac, char *av[]);
+		Server(int port, const std::string &password);
 		~Server();
 		
+		// std::map<std::string, Channel>	_channels;
+		
+		void	run();
+		
+		//getter
+		// int		getServerSocket();
+		// Client	*getClientByNick(const std::string &nick);
+		
 };
-
-
-
 
 #endif

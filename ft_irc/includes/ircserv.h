@@ -1,29 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Client.hpp                                         :+:      :+:    :+:   */
+/*   ircserv.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tat-nguy <tat-nguy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/12 22:59:07 by tat-nguy          #+#    #+#             */
-/*   Updated: 2025/09/10 10:33:38 by tat-nguy         ###   ########.fr       */
+/*   Created: 2025/09/10 10:31:53 by tat-nguy          #+#    #+#             */
+/*   Updated: 2025/09/10 12:11:21 by tat-nguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef _CLIENT_
-# define _CLIENT_
+#ifndef _IRCSERV_H_
+# define _IRCSERV_H_
 
-#include "ircserv.h"
+#include <iostream>
+#include <exception>
+#include <vector>
+#include <map>
+#include <string>
+#include <fcntl.h>
+#include <sys/socket.h>
+#include <unistd.h>
 
-class Client
-{
-	private:
-		int		_ClientSocket;
-		
+#define BUFFER_SIZE 512
 
-	public:
-		Client(/* args */);
-		~Client();
-};
+class Channel;
+class Client;
+class Server;
 
 #endif
