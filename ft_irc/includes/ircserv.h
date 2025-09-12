@@ -27,6 +27,7 @@
 #include <csignal> //for signal
 #include <string>
 #include <cstring>
+#include <cstdlib> // atoi
 
 #define BUFFER_SIZE 42
 

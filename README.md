@@ -12,11 +12,17 @@ IRC follows **client-server model**. It means that both client and server softwa
 
 ### II - Requirements
 
-#### 1 - Authentication
+As we have IRC Client `Konverstation` in 42. We will take it like the reference IRC Client.
 
-PASS <password> → Check before allowing other commands.
-NICK <nickname> → Set nickname, must be unique.
+#### 1 - 🔑 Authentication
+
+When you connect with the password in Konversation, check your server log:
+it should accept only if password matches ./ircserv <port> <password>.
+
+/pass <password> → Check before allowing other commands.
+/nick <nickname> → Set nickname, must be unique.
 USER <username> <mode> <unused> :<realname> → Set username.
+
 
 #### 2 - Messaging
 

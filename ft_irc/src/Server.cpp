@@ -112,9 +112,9 @@ void	Server::handlerClientData(size_t index)
 	// append received data to buffer
 	_clients[client_fd] += buffer;
 
-	// check for complete IRC messages (\r\n terminated)
+	// check for complete IRC messages (\r\n terminated) -> Konversation only \n
 	size_t	pos;
-	while ((pos = _clients[client_fd].find("\r\n")) != std::string::npos)
+	while ((pos = _clients[client_fd].find("\n")) != std::string::npos)
 	{
 		std::string	message = _clients[client_fd].substr(0, pos);
 		_clients[client_fd].erase(0, pos + 2);
@@ -122,7 +122,7 @@ void	Server::handlerClientData(size_t index)
 		std::cout << "[RECV] FD=" << client_fd << ": " << message << std::endl;
 
 		// Echo message back to client
-		std::string reply = ":ircserv ECHO: " + message + "\r\n";
+		std::string reply = ":ircserv ECHO: " + message + "\n";
 		send(client_fd, reply.c_str(), reply.size(), 0);
 	}
 }
@@ -134,8 +134,8 @@ void	Server::run()
 		int	ready = poll(&_poll_fds[0], _poll_fds.size(), -1);
 		if (ready < 0)
 		{
-			if (errno == EINTR)
-				continue ;
+			// if (errno == EINTR)
+			// 	continue ;
 			throw std::runtime_error("poll() failed");
 		}
 		for (size_t i = 0; i < _poll_fds.size(); ++i)
