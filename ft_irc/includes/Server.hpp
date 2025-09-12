@@ -6,7 +6,7 @@
 /*   By: tat-nguy <tat-nguy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 22:59:34 by tat-nguy          #+#    #+#             */
-/*   Updated: 2025/09/10 12:08:39 by tat-nguy         ###   ########.fr       */
+/*   Updated: 2025/09/12 09:24:19 by tat-nguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ class Server
 		void	handlerClientData(size_t index);
 		
 	public:
-		Server(int port, const std::string &password);
+		Server(char *port, char *password);
 		~Server();
 		
 		// std::map<std::string, Channel>	_channels;

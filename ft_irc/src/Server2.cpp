@@ -6,22 +6,15 @@
 /*   By: tat-nguy <tat-nguy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 22:59:45 by tat-nguy          #+#    #+#             */
-/*   Updated: 2025/09/12 09:25:02 by tat-nguy         ###   ########.fr       */
+/*   Updated: 2025/09/11 17:19:27 by tat-nguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ircserv.h"
 #include "../includes/Server.hpp"
 
-Server::Server(char	*port, char *password)
+Server::Server(int port, const std::string &password): _port(port), _password(password)
 {
-	for (size_t i = 0; port[i] != '\0'; ++i)
-	{
-		if (!std::isdigit(port[i]))
-			throw std::invalid_argument("Error: Invalid port number");
-	}
-	_port = std::atoi(port);
-	_password = password;
 	initServerSocket();
 }
 Server::~Server()
@@ -31,7 +24,7 @@ Server::~Server()
 
 void	Server::initServerSocket()
 {
-	// create new server socket (IPv4 address family and TCP stream socket) and return a fd
+	// create new socket (IPv4 address family and TCP stream socket) and return a fd
 	_server_fd = socket(AF_INET, SOCK_STREAM, 0);
 	if (_server_fd < 0)
 		throw std::runtime_error("Error: socket() failed");

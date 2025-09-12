@@ -6,7 +6,7 @@
 /*   By: tat-nguy <tat-nguy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/05 18:50:36 by tat-nguy          #+#    #+#             */
-/*   Updated: 2025/09/10 12:06:08 by tat-nguy         ###   ########.fr       */
+/*   Updated: 2025/09/12 09:23:12 by tat-nguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,7 @@ int	main(int ac, char *av[])
 		if (ac != 3)
 			throw std::length_error("Usage: ./ircserv <port> <password>");
 		
-		int	port = atoi(av[1]);
-		std::string password = av[2];
-		
-		Server	ircserv(port, password);
+		Server	ircserv(av[1], av[2]);
 
 		ircserv.run();
 	}
