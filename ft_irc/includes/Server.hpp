@@ -6,7 +6,7 @@
 /*   By: tat-nguy <tat-nguy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 22:59:34 by tat-nguy          #+#    #+#             */
-/*   Updated: 2025/09/12 09:24:19 by tat-nguy         ###   ########.fr       */
+/*   Updated: 2025/09/14 22:41:12 by tat-nguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ class Server
 		Server(Server const &src);
 		Server	&operator=(Server const &rhs);
 
-		void	initServerSocket();
-		void	acceptClient();
+		void	initServerSocket(void);
+		void	acceptClient(void);
 		void	handlerClientData(size_t index);
 		
 	public:
@@ -39,12 +39,14 @@ class Server
 		
 		// std::map<std::string, Channel>	_channels;
 		
-		void	run();
+		void	run(void);
 		
 		//getter
-		// int		getServerSocket();
+		int					getSocket(void);
+		std::string const	&getPassword(void);
 		// Client	*getClientByNick(const std::string &nick);
 		
+		void	handlerCommand(Client &client, std::string const &line);
 };
 
 #endif

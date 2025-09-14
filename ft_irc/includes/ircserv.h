@@ -6,7 +6,7 @@
 /*   By: tat-nguy <tat-nguy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 10:31:53 by tat-nguy          #+#    #+#             */
-/*   Updated: 2025/09/11 16:52:11 by tat-nguy         ###   ########.fr       */
+/*   Updated: 2025/09/14 22:36:08 by tat-nguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 #include <string>
 #include <cstring>
 #include <cstdlib> // atoi
+#include <sstream> // istringstream
 
 #define BUFFER_SIZE 42
 

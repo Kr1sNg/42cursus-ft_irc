@@ -6,12 +6,13 @@
 /*   By: tat-nguy <tat-nguy@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 22:59:45 by tat-nguy          #+#    #+#             */
-/*   Updated: 2025/09/12 09:25:02 by tat-nguy         ###   ########.fr       */
+/*   Updated: 2025/09/14 22:55:12 by tat-nguy         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/ircserv.h"
 #include "../includes/Server.hpp"
+#include "../includes/Client.hpp"
 
 Server::Server(char	*port, char *password)
 {
@@ -22,6 +23,8 @@ Server::Server(char	*port, char *password)
 	}
 	_port = std::atoi(port);
 	_password = password;
+	if (_port < 1024 || _port > 65535 || _password.size() < 1 || _password.size() > 20)
+		throw std::invalid_argument("Error: Invalid port number or Password");
 	initServerSocket();
 }
 Server::~Server()
@@ -122,7 +125,7 @@ void	Server::handlerClientData(size_t index)
 		std::cout << "[RECV] FD=" << client_fd << ": " << message << std::endl;
 
 		// Echo message back to client
-		std::string reply = ":ircserv ECHO: " + message + "\n";
+		std::string reply = ":ircserv ECHO: " + message + "\r\n";
 		send(client_fd, reply.c_str(), reply.size(), 0);
 	}
 }
@@ -151,4 +154,42 @@ void	Server::run()
 			}
 		}
 	}
+}
+
+void	Server::handlerCommand(Client &client, std::string const &line)
+{
+	std::istringstream	iss(line);
+	std::string			cmd;
+	iss >> cmd;
+
+	if (cmd == "PASS")
+	{
+		std::string	pass;
+		iss >> pass;
+		if (pass == _password)
+			client.setPassGiven(true);
+		else
+		{
+			throw std::invalid_argument("Error: Wrong password");
+			close (client.getSocket());
+		}
+	}
+	else if (cmd == "NICK")
+	{
+		std::string	nick;
+		iss >> nick;
+		client.setNick(nick);
+	}
+	else if (cmd == "USER")
+	{
+		std::string user, mode, unused, name;
+		iss >> user >> mode >> unused;
+		std::getline(iss, name);
+		if (!name.empty() && name[0] == ':')
+			name = name.substr(1);
+		client.setUser(user);
+		client.setName(name);
+	}
+	else
+		client.tryRegister();
 }

@@ -216,6 +216,198 @@ int	fstat(int fd, struct stat *buf);
 
 ## B - Pseudo Code
 
+### Phase 0 — Setup
+
+Goal: A clean project skeleton with Makefile.
+
+Tasks:
+
+Write Makefile (all, clean, fclean, re).
+
+Create core classes:
+
+Server (manages socket, clients, channels).
+
+Client (tracks fd, nick, username, auth status).
+
+Channel (tracks users, operators, topic, modes).
+
+Initialize server socket:
+
+socket, setsockopt, bind, listen.
+
+Use poll() for handling multiple fds.
+
+Test:
+
+```bash
+./ircserv 6667 password
+nc localhost 6667 #→ should connect and not hang.
+```
+
+### Phase 1 — Connection & Authentication
+
+Goal: Clients connect and authenticate with password.
+
+Features:
+
+On connect, client is in unauthenticated state.
+
+Require PASS, NICK, and USER before marking client as “registered”.
+
+Store nick/username inside Client.
+
+Tests:
+
+Netcat:
+
+PASS password
+NICK tat
+USER tat 0 * :Tat Hoang
+
+
+→ Should see welcome message (001).
+
+Wrong PASS → disconnect.
+
+### Phase 2 — Basic Commands
+
+Goal: Implement fundamental IRC flow.
+
+Features:
+
+PING / PONG (keepalive).
+
+QUIT (clean disconnect).
+
+JOIN <#chan>: create channel if not exists, add user.
+
+PART <#chan>: leave channel.
+
+PRIVMSG <target> <msg>:
+
+Target = nick → send direct.
+
+Target = channel → broadcast to channel.
+
+Tests:
+
+Run 2 Konversation clients.
+
+Both JOIN #42school.
+
+Send “hello” → both should see it.
+
+/msg <nick> hi → only target sees it.
+
+### Phase 3 — Operators and Privileges
+
+Goal: Implement operator roles inside channels.
+
+Features:
+
+First client joining a channel becomes operator.
+
+Track operators with a set in Channel.
+
+Allow operators to promote/demote with MODE +o/-o.
+
+Tests:
+
+Two users in #42school.
+
+Operator runs /mode #42school +o alice.
+
+Alice should appear with @ in Konversation.
+
+### Phase 4 — Operator Commands
+
+Goal: Implement required commands.
+
+Features:
+
+KICK <#chan> <nick> :reason
+
+INVITE <nick> <#chan>
+
+TOPIC <#chan> [topic]
+
+No arg → show topic.
+
+With arg → set topic (only ops if +t mode).
+
+MODE <#chan> flags:
+
++i / -i (invite only).
+
++t / -t (topic only ops).
+
++k / -k (channel key).
+
++o / -o (operator).
+
++l / -l (user limit).
+
+Tests:
+
+With Konversation:
+
+/kick someone → they’re removed.
+
+/invite works if channel is +i.
+
+/topic changes and syncs to all.
+
+/mode toggles correctly.
+
+### Phase 5 — Robustness
+
+Goal: Make server stable & evaluable.
+
+Tasks:
+
+Handle partial messages (IRC messages end with \r\n).
+
+Ensure non-blocking I/O (fcntl).
+
+Implement poll loop correctly.
+
+Clean disconnect on client quit or socket close.
+
+Tests:
+
+Connect 10+ Netcat sessions, join one channel.
+
+Send one message → all receive.
+
+Close one Netcat → server cleans it up.
+
+### Phase 6 — Validation
+
+Goal: Confirm compliance.
+
+Tasks:
+
+Run against your reference client (Konversation).
+
+Compare behavior with a real IRC network (e.g., libera.chat).
+
+Tests:
+
+Every required feature must behave the same.
+
+Use Netcat for debugging raw protocol.
+
+### 🚀 Final Notes
+
+Always test new features first with Netcat (to see raw protocol),
+then confirm with Konversation (real client).
+
+Stick to port 6667 (safe, expected for IRC).
+
+Don’t forget signals: handle SIGINT (Ctrl+C) gracefully → close sockets.
+
+
 ## C - Testing
 
 ## D - Issues and Bugs
